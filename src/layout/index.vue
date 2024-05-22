@@ -8,7 +8,7 @@
                 <div class="header-container">
                     <div class="main">
                         <Logo />
-                        <!-- 当头部导航大于 1 个的时候才会显示 -->
+                        <!-- 当头部导航大于1个的时候才会显示 -->
                         <div v-if="$store.state.menu.routes.length > 1" class="nav">
                             <template v-for="(item, index) in $store.state.menu.routes">
                                 <div v-if="item.children && item.children.length !== 0" :key="index" :class="{
