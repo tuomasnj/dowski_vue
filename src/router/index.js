@@ -123,6 +123,15 @@ let asyncRoutes = [
         children: [
             ...CooperationExample
         ]
+    },
+    {
+        meta: {
+            title: '日历计划',
+            icon: 'calendar'
+        },
+        children: [
+            ...CooperationExample
+        ]
     }
 ]
 
