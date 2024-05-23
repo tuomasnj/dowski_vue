@@ -80,7 +80,7 @@ export default {
                     this.$store.dispatch('user/login', this.form).then(() => {
                         this.loading = false
                         this.form.remember && localStorage.setItem('login_account', this.form.account)
-                        this.$router.push({ path: this.redirect || '/' })
+                        this.$router.push({ path: this.redirect || '/calendar' })
                     }).catch(() => {
                         this.loading = false
                     })

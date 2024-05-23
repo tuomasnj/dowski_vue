@@ -67,70 +67,71 @@ const constantRoutes = [
     }
 ]
 
-import MultilevelMenuExample from './modules/multilevel.menu.example'
-import BreadcrumbExample from './modules/breadcrumb.example'
-import KeepAliveExample from './modules/keep.alive.example'
-import ComponentBasicExample from './modules/component.basic.example'
-import ComponentExtendExample from './modules/component.extend.example'
-import PermissionExample from './modules/permission.example'
-import MockExample from './modules/mock.example'
-import VideosExample from './modules/videos.example'
-import ExTernalLinkExample from './modules/external.link.example'
-import EcologyExample from './modules/ecology.example'
-import CooperationExample from './modules/cooperation.example'
+// import MultilevelMenuExample from './modules/multilevel.menu.example'
+// import BreadcrumbExample from './modules/breadcrumb.example'
+// import KeepAliveExample from './modules/keep.alive.example'
+// import ComponentBasicExample from './modules/component.basic.example'
+// import ComponentExtendExample from './modules/component.extend.example'
+// import PermissionExample from './modules/permission.example'
+// import MockExample from './modules/mock.example'
+// import VideosExample from './modules/videos.example'
+// import ExTernalLinkExample from './modules/external.link.example'
+// import EcologyExample from './modules/ecology.example'
+// import CooperationExample from './modules/cooperation.example.js'
+import CalendarRouter from './modules/calendar.js'
 
 // 当 children 不为空的主导航只有一项时，则隐藏
 let asyncRoutes = [
-    {
-        meta: {
-            title: '演示',
-            icon: 'sidebar-default'
-        },
-        children: [
-            MultilevelMenuExample,
-            BreadcrumbExample,
-            KeepAliveExample,
-            ComponentBasicExample,
-            ComponentExtendExample,
-            PermissionExample,
-            MockExample,
-            ExTernalLinkExample
-        ]
-    },
-    {
-        meta: {
-            title: '教程',
-            icon: 'sidebar-videos'
-        },
-        children: [
-            ...VideosExample
-        ]
-    },
-    {
-        meta: {
-            title: '生态',
-            icon: 'sidebar-ecology'
-        },
-        children: [
-            ...EcologyExample
-        ]
-    },
-    {
-        meta: {
-            title: '战略合作',
-            icon: 'sidebar-cooperation'
-        },
-        children: [
-            ...CooperationExample
-        ]
-    },
+    // {
+    //     meta: {
+    //         title: '演示',
+    //         icon: 'sidebar-default'
+    //     },
+    //     children: [
+    //         MultilevelMenuExample,
+    //         BreadcrumbExample,
+    //         KeepAliveExample,
+    //         ComponentBasicExample,
+    //         ComponentExtendExample,
+    //         PermissionExample,
+    //         MockExample,
+    //         ExTernalLinkExample
+    //     ]
+    // },
+    // {
+    //     meta: {
+    //         title: '教程',
+    //         icon: 'sidebar-videos'
+    //     },
+    //     children: [
+    //         ...VideosExample
+    //     ]
+    // },
+    // {
+    //     meta: {
+    //         title: '生态',
+    //         icon: 'sidebar-ecology'
+    //     },
+    //     children: [
+    //         ...EcologyExample
+    //     ]
+    // },
+    // {
+    //     meta: {
+    //         title: '战略合作',
+    //         icon: 'sidebar-cooperation'
+    //     },
+    //     children: [
+    //         ...CooperationExample
+    //     ]
+    // },
     {
         meta: {
             title: '日历计划',
             icon: 'calendar'
         },
         children: [
-            ...CooperationExample
+            ...CalendarRouter
         ]
     }
 ]
@@ -145,6 +146,7 @@ const lastRoute = [{
 }]
 
 const router = new VueRouter({
+    // mode: 'history',
     routes: constantRoutes
 })
 
