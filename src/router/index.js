@@ -67,37 +67,37 @@ const constantRoutes = [
     }
 ]
 
-// import MultilevelMenuExample from './modules/multilevel.menu.example'
-// import BreadcrumbExample from './modules/breadcrumb.example'
-// import KeepAliveExample from './modules/keep.alive.example'
-// import ComponentBasicExample from './modules/component.basic.example'
-// import ComponentExtendExample from './modules/component.extend.example'
-// import PermissionExample from './modules/permission.example'
-// import MockExample from './modules/mock.example'
+import MultilevelMenuExample from './modules/multilevel.menu.example'
+import BreadcrumbExample from './modules/breadcrumb.example'
+import KeepAliveExample from './modules/keep.alive.example'
+import ComponentBasicExample from './modules/component.basic.example'
+import ComponentExtendExample from './modules/component.extend.example'
+import PermissionExample from './modules/permission.example'
+import MockExample from './modules/mock.example'
 // import VideosExample from './modules/videos.example'
-// import ExTernalLinkExample from './modules/external.link.example'
+import ExTernalLinkExample from './modules/external.link.example'
 // import EcologyExample from './modules/ecology.example'
 // import CooperationExample from './modules/cooperation.example.js'
 import CalendarRouter from './modules/calendar.js'
 
 // 当 children 不为空的主导航只有一项时，则隐藏
 let asyncRoutes = [
-    // {
-    //     meta: {
-    //         title: '演示',
-    //         icon: 'sidebar-default'
-    //     },
-    //     children: [
-    //         MultilevelMenuExample,
-    //         BreadcrumbExample,
-    //         KeepAliveExample,
-    //         ComponentBasicExample,
-    //         ComponentExtendExample,
-    //         PermissionExample,
-    //         MockExample,
-    //         ExTernalLinkExample
-    //     ]
-    // },
+    {
+        meta: {
+            title: '演示',
+            icon: 'sidebar-default'
+        },
+        children: [
+            MultilevelMenuExample,
+            BreadcrumbExample,
+            KeepAliveExample,
+            ComponentBasicExample,
+            ComponentExtendExample,
+            PermissionExample,
+            MockExample,
+            ExTernalLinkExample
+        ]
+    },
     // {
     //     meta: {
     //         title: '教程',
