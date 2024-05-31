@@ -113,7 +113,7 @@ export default {
     z-index: 0;
     width: 100%;
     height: 100%;
-    background-image: url(../assets/images/login-bg.jpg);
+    background-image: url(../assets/images/login-bg1.jpg);
     background-size: cover;
     background-position: center center;
 }
@@ -130,7 +130,8 @@ export default {
     box-shadow: 0 0 5px #999;
     .login-banner {
         width: 300px;
-        background-image: url(../assets/images/login-banner.jpg);
+        background-image: url(../assets/images/login-banner1.jpg);
+        opacity: 0.9;
         background-size: cover;
         background-position: center center;
     }
