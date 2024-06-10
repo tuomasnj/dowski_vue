@@ -67,37 +67,37 @@ const constantRoutes = [
     }
 ]
 
-import MultilevelMenuExample from './modules/multilevel.menu.example'
-import BreadcrumbExample from './modules/breadcrumb.example'
-import KeepAliveExample from './modules/keep.alive.example'
-import ComponentBasicExample from './modules/component.basic.example'
-import ComponentExtendExample from './modules/component.extend.example'
-import PermissionExample from './modules/permission.example'
-import MockExample from './modules/mock.example'
+// import MultilevelMenuExample from './modules/multilevel.menu.example'
+// import BreadcrumbExample from './modules/breadcrumb.example'
+// import KeepAliveExample from './modules/keep.alive.example'
+// import ComponentBasicExample from './modules/component.basic.example'
+// import ComponentExtendExample from './modules/component.extend.example'
+// import PermissionExample from './modules/permission.example'
+// import MockExample from './modules/mock.example'
 // import VideosExample from './modules/videos.example'
-import ExTernalLinkExample from './modules/external.link.example'
+// import ExTernalLinkExample from './modules/external.link.example'
 // import EcologyExample from './modules/ecology.example'
 // import CooperationExample from './modules/cooperation.example.js'
 import CalendarRouter from './modules/calendar.js'
 
 // 当 children 不为空的主导航只有一项时，则隐藏
 let asyncRoutes = [
-    {
-        meta: {
-            title: '演示',
-            icon: 'sidebar-default'
-        },
-        children: [
-            MultilevelMenuExample,
-            BreadcrumbExample,
-            KeepAliveExample,
-            ComponentBasicExample,
-            ComponentExtendExample,
-            PermissionExample,
-            MockExample,
-            ExTernalLinkExample
-        ]
-    },
+    // {
+    //     meta: {
+    //         title: '演示',
+    //         icon: 'sidebar-default'
+    //     },
+    //     children: [
+    //         MultilevelMenuExample,
+    //         BreadcrumbExample,
+    //         KeepAliveExample,
+    //         ComponentBasicExample,
+    //         ComponentExtendExample,
+    //         PermissionExample,
+    //         MockExample,
+    //         ExTernalLinkExample
+    //     ]
+    // },
     // {
     //     meta: {
     //         title: '教程',
@@ -163,7 +163,7 @@ VueRouter.prototype.replace = function replace(location) {
 router.beforeEach(async(to, from, next) => {
     store.state.settings.enableProgress && NProgress.start()
     // 已经登录，但还没根据权限动态挂载路由
-    if (store.getters['user/isLogin'] && !store.state.menu.isGenerate) {
+    if (localStorage.getItem('token') && !store.state.menu.isGenerate) {
         /**
          * 重置 matcher
          * https://blog.csdn.net/baidu_28647571/article/details/101711682
@@ -185,7 +185,7 @@ router.beforeEach(async(to, from, next) => {
         store.commit('menu/setHeaderActived', to.path)
     }
     to.meta.title && store.commit('settings/setTitle', to.meta.title)
-    if (store.getters['user/isLogin']) {
+    if (localStorage.getItem('token')) {
         if (to.name) {
             if (to.matched.length !== 0) {
                 // 如果已登录状态下，进入登录页会强制跳转到控制台页面

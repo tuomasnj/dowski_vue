@@ -1,17 +1,15 @@
 import axios from 'axios'
 // import Qs from 'qs'
-import router from '@/router/index'
-import store from '@/store/index'
-import { Message } from 'element-ui'
+// import router from '@/router/index'
 
-const toLogin = () => {
-    router.push({
-        path: '/login',
-        query: {
-            redirect: router.currentRoute.fullPath
-        }
-    })
-}
+// const toLogin = () => {
+//     router.push({
+//         path: '/login',
+//         query: {
+//             redirect: router.currentRoute.fullPath
+//         }
+//     })
+// }
 
 const api = axios.create({
     baseURL: process.env.VUE_APP_API_ROOT,
@@ -24,27 +22,16 @@ api.interceptors.request.use(
     request => {
         if (request.method == 'post') {
             if (request.data instanceof FormData) {
-                if (store.getters['user/isLogin']) {
+                if (localStorage.getItem('apiToken')) {
                     // 如果是 FormData 类型（上传图片）
-                    request.data.append('token', store.state.user.token)
+                    // request.data.append('token', store.state.user.token)
+                    request.headers['token'] = localStorage.getItem('apiToken')
                 }
             } else {
-                // 带上 token
-                if (request.data == undefined) {
-                    request.data = {}
+                if (localStorage.getItem('apiToken')) {
+                    request.headers['Content-Type'] = 'application/json'
+                    request.headers['token'] = localStorage.getItem('apiToken')
                 }
-                if (store.getters['user/isLogin']) {
-                    request.data.token = store.state.user.token
-                }
-                // request.data = Qs.stringify(request.data)
-            }
-        } else {
-            // 带上 token
-            if (request.params == undefined) {
-                request.params = {}
-            }
-            if (store.getters['user/isLogin']) {
-                request.params.token = store.state.user.token
             }
         }
         return request
@@ -53,13 +40,10 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
     response => {
-        if (response.data.error != '') {
-            // 如果接口请求时发现 token 失效，则立马跳转到登录页
-            if (response.data.status == 0) {
-                toLogin()
-            }
-            Message.error(response.data.error)
-            return Promise.reject(response.data)
+        // 如果响应头存在token
+        if (response.headers['apitoken'] && response.headers['apitoken'] != undefined) {
+            const token = response.headers['apitoken']
+            localStorage.setItem('token', token)
         }
         return Promise.resolve(response.data)
     },

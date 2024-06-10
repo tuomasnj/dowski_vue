@@ -13,7 +13,7 @@
                             <svg-icon slot="prefix" name="user" />
                         </el-input>
                     </el-form-item>
-                    <el-form-item prop="password">
+                    <el-form-item prop="password" style="margin-bottom: 0;">
                         <el-input ref="password" v-model="form.password" :type="passwordType" placeholder="密码" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin">
                             <svg-icon slot="prefix" name="password" />
                             <svg-icon slot="suffix" :name="passwordType === 'password' ? 'eye' : 'eye-open'" @click="showPassword" />
@@ -21,12 +21,12 @@
                     </el-form-item>
                 </div>
                 <el-checkbox v-model="form.remember">记住我</el-checkbox>
-                <el-button :loading="loading" type="primary" style="width: 100%;" @click.native.prevent="handleLogin">登 录</el-button>
-                <div style="margin-top: 20px; margin-bottom: -10px; color: #666; font-size: 14px; text-align: center; font-weight: bold;">
+                <el-button :loading="loading" type="primary" style="width: 100%; white-space: pre-wrap;" @click="handleLogin">登&nbsp;&nbsp;&nbsp;录</el-button>
+                <!-- <div style="margin-top: 20px; margin-bottom: -10px; color: #666; font-size: 14px; text-align: center; font-weight: bold;">
                     <span style="margin-right: 5px;">演示帐号一键登录：</span>
                     <el-button type="danger" size="mini" @click="testAccount('admin')">admin</el-button>
                     <el-button type="danger" size="mini" plain @click="testAccount('test')">test</el-button>
-                </div>
+                </div> -->
             </el-form>
         </div>
         <Copyright v-if="$store.state.settings.showCopyright" />
@@ -34,15 +34,18 @@
 </template>
 
 <script>
+import { userLogin } from '@/api/login'
+import router from '@/router/index'
+
 export default {
     name: 'Login',
     data() {
         return {
             title: process.env.VUE_APP_TITLE,
             form: {
-                account: localStorage.login_account || '',
+                account: '',
                 password: '',
-                remember: !!localStorage.login_account
+                remember: false
             },
             rules: {
                 account: [
@@ -54,16 +57,14 @@ export default {
                 ]
             },
             loading: false,
-            passwordType: 'password',
-            redirect: undefined
+            passwordType: 'password'
         }
     },
-    watch: {
-        $route: {
-            handler: function(route) {
-                this.redirect = route.query && route.query.redirect
-            },
-            immediate: true
+
+    mounted() {
+        if (localStorage.getItem('remember_pass') && localStorage.getItem('remember_account')) {
+            this.form.account = localStorage.getItem('remember_account')
+            this.form.password = localStorage.getItem('remember_pass')
         }
     },
     methods: {
@@ -77,12 +78,37 @@ export default {
             this.$refs.form.validate(valid => {
                 if (valid) {
                     this.loading = true
-                    this.$store.dispatch('user/login', this.form).then(() => {
+                    let data = {
+                        userName: this.form.account,
+                        password: this.form.password
+                    }
+                    userLogin(data).then(res => {
                         this.loading = false
-                        this.form.remember && localStorage.setItem('login_account', this.form.account)
-                        this.$router.push({ path: this.redirect || '/calendar' })
-                    }).catch(() => {
+                        if (res.code == 200) {
+                            router.push({ path: '/calendar' })
+                            if (this.form.remember) {
+                                localStorage.setItem('remember_account', this.form.account)
+                                localStorage.setItem('remember_pass', this.form.password)
+                            }
+                            this.$message({
+                                message: '登陆成功',
+                                type: 'success'
+                            })
+                            this.$store.commit('user/setUserData', {
+                                account: this.form.account,
+                                token: localStorage.getItem('token'),
+                                failure_time: ''
+                            })
+                        } else {
+                            this.$message({
+                                message: '用户名或密码错误',
+                                type: 'error'
+                            })
+                        }
+                    }).catch(err => {
+                        console.log(err)
                         this.loading = false
+                        this.$message.error('网络异常')
                     })
                 }
             })

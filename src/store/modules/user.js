@@ -62,7 +62,7 @@ const mutations = {
         state.failure_time = data.failure_time
     },
     removeUserData(state) {
-        localStorage.removeItem('account')
+        // localStorage.removeItem('account')
         localStorage.removeItem('token')
         localStorage.removeItem('failure_time')
         state.account = ''
