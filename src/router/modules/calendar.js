@@ -15,13 +15,13 @@ export default [
                 name: 'calendarHome',
                 component: () => import('@/views/calendar/index.vue'),
                 meta: {
-                    title: '首页'
+                    title: '重要事项'
                 }
             },
             {
                 path: 'calendarWish',
                 name: '',
-                component: () => import('@/views/calendar/index.vue'),
+                component: () => import('@/views/calendar/calendarWish.vue'),
                 meta: {
                     title: '愿望单'
                 }
