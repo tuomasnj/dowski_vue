@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="calendarWish">
         <page-main v-loading="showLoading">
             <div>
                 <el-button @click="load">点击加载</el-button>
@@ -85,4 +85,7 @@ export default {
 </script>
 
 <style scoped>
+.calendarWish {
+    margin: 2px;
+}
 </style>

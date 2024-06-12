@@ -20,7 +20,7 @@ let globalSettings = {
     // 版权信息配置，格式为：Copyright © [dates] <company>
     copyrightDates: '2024',
     copyrightCompany: 'dowski',
-    copyrightWebsite: 'https://hooray.github.io/fantastic-admin',
+    copyrightWebsite: '',
     // 是否开启导航搜索
     enableNavSearch: true,
     // 是否开启全屏
