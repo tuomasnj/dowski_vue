@@ -120,7 +120,7 @@ const actions = {
                     console.log('permissions', permissions)
                     accessedRoutes = filterAsyncRoutes(data.asyncRoutes, permissions)
                 } catch (err) {
-                    vueApp.$message.error('获取用户权限出错啦~~')
+                    vueApp.$message.error('获取用户权限出错啦~~请重新登录')
                     return
                 }
             } else {

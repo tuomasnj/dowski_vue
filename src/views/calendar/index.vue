@@ -38,7 +38,7 @@
                                     </div>
                                 </div>
                                 <div style="display: flex; vertical-align: center;">
-                                    <div class="ellipsis-multi-line">
+                                    <div class="ellipsis-multi-line" @click.stop="noop">
                                         {{ item.thingToDo }}
                                     </div>
                                 </div>
@@ -47,8 +47,11 @@
                     </div>
                 </div>
             </el-calendar>
-            <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+            <el-dialog class="Detaildialog" title="详细信息" :visible.sync="dialogFormVisible">
                 <el-form :model="form">
+                    <el-form-item label="事件日期" :label-width="formLabelWidth">
+                        {{ form.date }}
+                    </el-form-item>
                     <el-form-item label="活动名称" :label-width="formLabelWidth">
                         <el-input v-model="form.name" autocomplete="off" />
                     </el-form-item>
@@ -75,20 +78,23 @@ export default {
         return {
             curDate: new Date(),
             yearMonth: '',
+            showDialog: true,
             calendarData: [{
                 day: '2024-06-28',
-                thingToDo: '陪小倩宝宝一起过生日，吃生日蛋糕，去海底捞海皮，唱歌okok，还要玩真心话大冒险，要一起睡觉觉亲亲抱抱，一起贴贴睡大懒觉。'
+                thingToDo: '陪小倩宝宝一起过生日，吃生日蛋糕，去海底捞海皮，唱歌okok，还要玩真心话大冒险，要一起睡觉觉亲亲抱抱，一起贴贴睡大懒觉。',
+                remindTime: '2024-06-28 14:12:15'
             }, {
                 day: '2024-06-16',
-                thingToDo: '父亲节，问候一下爸爸。'
+                thingToDo: '父亲节，问候一下爸爸。',
+                remindTime: '2024-06-28 10:00:30'
             }],
             dialogFormVisible: false,
             form: {
+                date: '',
                 name: '',
                 region: '',
                 date1: '',
                 date2: '',
-                delivery: false,
                 type: [],
                 resource: '',
                 desc: ''
@@ -98,9 +104,14 @@ export default {
     },
 
     methods: {
+        noop() {},
+
         viewDetail(data) {
             let date = moment(data).format('yyyy-MM-DD')
             console.log(date)
+            // 判断calendarData中是否包含该日期
+            // 如果包含是修改，否则是添加备忘
+            this.form.date = date
             this.dialogFormVisible = true
         },
         queryMenuInfo() {
@@ -121,6 +132,14 @@ export default {
         ::v-deep .el-input__inner {
             width: auto;
         }
+        .Detaildialog {
+            ::v-deep .el-dialog {
+                width: 95%;
+            }
+            ::v-deep .el-dialog__header {
+                text-align: center;
+            }
+        }
         .ellipsis-multi-line {
             font-size: 8px;
             display: -webkit-box;
@@ -139,6 +158,9 @@ export default {
 }
 [data-mode=pc] {
     .calendarPage {
+        ::v-deep .el-dialog__header {
+            text-align: center;
+        }
         .ellipsis-multi-line {
             display: -webkit-box;        /* 创建一个伸缩盒子元素 */
             -webkit-box-orient: vertical;/* 设置盒子为垂直方向 */
