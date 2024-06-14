@@ -15,7 +15,8 @@ export default [
                 name: 'calendarHome',
                 component: () => import('@/views/calendar/index.vue'),
                 meta: {
-                    title: '重要事项'
+                    title: '重要事项',
+                    auth: ['sys:memo']
                 }
             },
             {

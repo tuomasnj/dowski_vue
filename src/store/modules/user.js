@@ -1,4 +1,5 @@
 import api from '@/api'
+import { getPermissions } from '@/api/login'
 
 const state = {
     account: localStorage.account || '',
@@ -37,16 +38,13 @@ const actions = {
         commit('menu/invalidRoutes', null, {root: true})
     },
     // 获取我的权限
-    getPermissions({state, commit}) {
-        return new Promise(resolve => {
-            // 通过 mock 获取权限
-            api.get('mock/member/permission', {
-                params: {
-                    account: state.account
-                }
-            }).then(res => {
-                commit('setPermissions', res.data.permissions)
-                resolve(res.data.permissions)
+    getPermissions({commit}) {
+        return new Promise((resolve, reject) => {
+            getPermissions().then(res => {
+                commit('setPermissions', res.data)
+                resolve(res.data)
+            }).catch(err => {
+                reject(err)
             })
         })
     }
@@ -62,7 +60,7 @@ const mutations = {
         state.failure_time = data.failure_time
     },
     removeUserData(state) {
-        // localStorage.removeItem('account')
+        localStorage.removeItem('account')
         localStorage.removeItem('token')
         localStorage.removeItem('failure_time')
         state.account = ''

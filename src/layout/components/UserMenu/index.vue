@@ -90,6 +90,7 @@ export default {
                             name: 'login'
                         })
                     })
+                    // 清空用户权限
                     break
             }
         },

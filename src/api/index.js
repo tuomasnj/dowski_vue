@@ -1,4 +1,6 @@
 import axios from 'axios'
+import store from '@/store/index'
+import router from '@/router/index'
 // import Qs from 'qs'
 // import router from '@/router/index'
 
@@ -21,16 +23,17 @@ const api = axios.create({
 api.interceptors.request.use(
     request => {
         if (request.method == 'post') {
+            console.log(request)
             if (request.data instanceof FormData) {
-                if (localStorage.getItem('apiToken')) {
+                if (localStorage.getItem('token')) {
                     // 如果是 FormData 类型（上传图片）
                     // request.data.append('token', store.state.user.token)
-                    request.headers['token'] = localStorage.getItem('apiToken')
+                    request.headers['token'] = localStorage.getItem('token')
                 }
             } else {
-                if (localStorage.getItem('apiToken')) {
+                if (localStorage.getItem('token') && !request.url.includes('login')) {
                     request.headers['Content-Type'] = 'application/json'
-                    request.headers['token'] = localStorage.getItem('apiToken')
+                    request.headers['token'] = localStorage.getItem('token')
                 }
             }
         }
@@ -44,6 +47,19 @@ api.interceptors.response.use(
         if (response.headers['apitoken'] && response.headers['apitoken'] != undefined) {
             const token = response.headers['apitoken']
             localStorage.setItem('token', token)
+        }
+        if (response.data.code != 200) {
+            console.log(response.data)
+            // 退出登录
+            store.dispatch('user/logout').then(() => {
+                router.push({
+                    name: 'login'
+                })
+            })
+            // 清空用户权限
+            store.commit('user/setPermissions', [])
+        //    alert(store.state.menu.isGenerate)
+        //    alert('permissions' + store.state.user.permissions)
         }
         return Promise.resolve(response.data)
     },

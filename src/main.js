@@ -34,6 +34,8 @@ const requireAll = requireContext => requireContext.keys().map(requireContext)
 requireAll(req)
 
 import './assets/styles/reset.scss'
+import { Message } from 'element-ui'
+Vue.prototype.$message = Message
 
 import './mock'
 
@@ -44,3 +46,5 @@ Vue.prototype.$eventBus = new Vue({
     store,
     render: h => h(App)
 }).$mount('#app')
+
+export const vueApp = Vue.prototype.$eventBus

@@ -163,6 +163,7 @@ VueRouter.prototype.replace = function replace(location) {
 router.beforeEach(async(to, from, next) => {
     store.state.settings.enableProgress && NProgress.start()
     // 已经登录，但还没根据权限动态挂载路由
+    // alert(store.state.menu.isGenerate)
     if (localStorage.getItem('token') && !store.state.menu.isGenerate) {
         /**
          * 重置 matcher
@@ -188,10 +189,14 @@ router.beforeEach(async(to, from, next) => {
     if (localStorage.getItem('token')) {
         if (to.name) {
             if (to.matched.length !== 0) {
-                // 如果已登录状态下，进入登录页会强制跳转到控制台页面
+                // 登陆状态禁止用户通过url进入登录界面
+                if (from.path == '/calendar/page') {
+                    NProgress.done()
+                    next(false)
+                }
                 if (to.name == 'login') {
                     next({
-                        name: 'dashboard',
+                        name: 'calendar',
                         replace: true
                     })
                 } else if (!store.state.settings.enableDashboard && to.name == 'dashboard') {

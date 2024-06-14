@@ -1,4 +1,5 @@
 import { deepClone } from '@/util'
+import { vueApp } from '@/main'
 
 function hasPermission(permissions, route) {
     let isAuth = false
@@ -110,12 +111,18 @@ const actions = {
     // 根据权限动态生成路由
     generateRoutes({rootState, dispatch, commit}, data) {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async resolve => {
+        return new Promise (async resolve => {
             let accessedRoutes
             // 判断权限功能是否开启
             if (rootState.settings.openPermission) {
-                const permissions = await dispatch('user/getPermissions', null, { root: true })
-                accessedRoutes = filterAsyncRoutes(data.asyncRoutes, permissions)
+                try {
+                    const permissions = await dispatch('user/getPermissions', null, { root: true })
+                    console.log('permissions', permissions)
+                    accessedRoutes = filterAsyncRoutes(data.asyncRoutes, permissions)
+                } catch (err) {
+                    vueApp.$message.error('获取用户权限出错啦~~')
+                    return
+                }
             } else {
                 accessedRoutes = data.asyncRoutes
             }
