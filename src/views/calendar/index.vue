@@ -48,23 +48,39 @@
                 </div>
             </el-calendar>
             <el-dialog class="Detaildialog" title="详细信息" :visible.sync="dialogFormVisible">
-                <el-form :model="form">
-                    <el-form-item label="事件日期" :label-width="formLabelWidth">
+                <el-form ref="form" :model="form" :rules="rules">
+                    <el-form-item label="事件日期：" :label-width="formLabelWidth">
                         {{ form.date }}
                     </el-form-item>
-                    <el-form-item label="活动名称" :label-width="formLabelWidth">
-                        <el-input v-model="form.name" autocomplete="off" />
+                    <el-form-item v-if="form.status == 1" label="通知内容：" :label-width="formLabelWidth">
+                        <clearableTextInputVue v-model="form.thingToDo" :clearable="true" :values="form.thingToDo" :disable="form.status == 1" />
                     </el-form-item>
-                    <el-form-item label="活动区域" :label-width="formLabelWidth">
-                        <el-select v-model="form.region" placeholder="请选择活动区域">
-                            <el-option label="区域一" value="shanghai" />
-                            <el-option label="区域二" value="beijing" />
-                        </el-select>
+                    <el-form-item v-else label="通知内容：" :label-width="formLabelWidth" prop="thingToDo">
+                        <clearableTextInputVue v-model="form.thingToDo" :clearable="true" :values="form.thingToDo" :disable="form.status == 1" />
+                    </el-form-item>
+                    <el-form-item :label-width="formLabelWidth" prop="remindTime">
+                        <span slot="label">
+                            <i class="el-icon-info" />
+                            <span> 通知时间：</span>
+                        </span>
+                        <div v-if="form.status == 1">
+                            {{ form.remindTime }}
+                        </div>
+                        <el-time-picker
+                            v-else
+                            v-model="form.remindTime"
+                            format="HH:mm"
+                            value-format="HH:mm"
+                            :placeholder="form.remindTime"
+                        />
+                    </el-form-item>
+                    <el-form-item v-if="form.status" label="通知状态：" :label-width="formLabelWidth">
+                        {{ form.status | statusFilter }}
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                    <el-button type="warning" @click="dialogFormVisible = false">关 闭</el-button>
+                    <el-button v-if="form.status == 0" type="primary" @click="submitForm">保 存</el-button>
                 </div>
             </el-dialog>
         </page-main>
@@ -73,7 +89,21 @@
 
 <script>
 import moment from 'moment'
+import clearableTextInputVue from '@/layout/components/clearableTextInput.vue'
 export default {
+    components: {
+        clearableTextInputVue
+    },
+    filters: {
+        statusFilter(val) {
+            switch (val) {
+                case 0:
+                    return '未发送邮件'
+                case 1:
+                    return '已邮件通知'
+            }
+        }
+    },
     data() {
         return {
             curDate: new Date(),
@@ -82,37 +112,65 @@ export default {
             calendarData: [{
                 day: '2024-06-28',
                 thingToDo: '陪小倩宝宝一起过生日，吃生日蛋糕，去海底捞海皮，唱歌okok，还要玩真心话大冒险，要一起睡觉觉亲亲抱抱，一起贴贴睡大懒觉。',
-                remindTime: '2024-06-28 14:12:15'
+                remindTime: '2024-06-28 14:12:15',
+                status: 0
             }, {
                 day: '2024-06-16',
                 thingToDo: '父亲节，问候一下爸爸。',
-                remindTime: '2024-06-28 10:00:30'
+                remindTime: '2024-06-28 10:00:30',
+                status: 1
             }],
             dialogFormVisible: false,
             form: {
                 date: '',
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                type: [],
-                resource: '',
-                desc: ''
+                remindTime: '',
+                thingToDo: ''
             },
-            formLabelWidth: '120px'
+            formLabelWidth: '120px',
+            rules: {
+                thingToDo: [{ required: true, message: '请填写通知内容', trigger: 'blur' }]
+                // remindTime: [
+                //     {required: true, message: '请选择时间', trigger: 'change' }
+                // ]
+            }
         }
     },
 
     methods: {
         noop() {},
-
+        submitForm() {
+            this.$refs['form'].validate(valid => {
+                if (valid) {
+                    alert('submit!')
+                } else {
+                    console.log('error submit!!')
+                    return false
+                }
+            })
+        },
         viewDetail(data) {
-            let date = moment(data).format('yyyy-MM-DD')
-            console.log(date)
+            let date = moment(data).format('YYYY年M月D日')
             // 判断calendarData中是否包含该日期
             // 如果包含是修改，否则是添加备忘
             this.form.date = date
-            this.dialogFormVisible = true
+            let index = moment(data).format('yyyy-MM-DD')
+            let obj = this.calendarData.filter(item => item.day == index)
+            if (obj.length == 0) {
+                console.log('尚未添加备忘录')
+                this.form.remindTime = ''
+                this.form.thingToDo = ''
+                this.form.status = ''
+                this.dialogFormVisible = true
+            } else if (obj.length == 1) {
+                // 已添加备忘录，查看或者修改内容
+                this.form.remindTime = moment(obj[0].remindTime).format('HH:mm')
+                this.form.thingToDo = obj[0].thingToDo
+                this.form.status = obj[0].status
+                this.dialogFormVisible = true
+            } else if (obj.length > 1) {
+                this.$message.error('数据异常')
+            }
+
         },
         queryMenuInfo() {
             if (this.yearMonth == '') {
@@ -138,6 +196,9 @@ export default {
             }
             ::v-deep .el-dialog__header {
                 text-align: center;
+            }
+            ::v-deep .el-form-item__label {
+                text-align: left;
             }
         }
         .ellipsis-multi-line {
@@ -187,7 +248,7 @@ export default {
     height: 150px;
 }
 ::v-deep .el-calendar-table td.is-today {
-    color: green;
+    color: red;
 }
 .view {
     background-color: #3f9eff;
