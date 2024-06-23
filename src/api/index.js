@@ -48,7 +48,7 @@ api.interceptors.response.use(
             const token = response.headers['apitoken']
             localStorage.setItem('token', token)
         }
-        if (response.data.code != 200) {
+        if (response.data.code == 501) {
             console.log(response.data)
             // 退出登录
             store.dispatch('user/logout').then(() => {

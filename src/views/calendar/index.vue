@@ -1,6 +1,6 @@
 <template>
     <div>
-        <page-main class="calendarPage">
+        <page-main v-loading="loading" class="calendarPage">
             <el-row :gutter="10" style="margin: 15px;">
                 <el-col :span="8">
                     <div style="display: flex; justify-content: space-between;">
@@ -53,14 +53,17 @@
                         {{ form.date }}
                     </el-form-item>
                     <el-form-item v-if="form.status == 1" label="通知内容：" :label-width="formLabelWidth">
-                        <clearableTextInputVue v-model="form.thingToDo" :clearable="true" :values="form.thingToDo" :disable="form.status == 1" />
+                        <clearableTextInputVue v-model="form.thingToDo" :clearable="true" :values="form.thingToDo" :disable="form.status == 1 || forbid == 1" />
                     </el-form-item>
                     <el-form-item v-else label="通知内容：" :label-width="formLabelWidth" prop="thingToDo">
-                        <clearableTextInputVue v-model="form.thingToDo" :clearable="true" :values="form.thingToDo" :disable="form.status == 1" />
+                        <clearableTextInputVue v-model="form.thingToDo" :clearable="true" :values="form.thingToDo" :disable="form.status == 1 || forbid == 1" />
                     </el-form-item>
                     <el-form-item :label-width="formLabelWidth" prop="remindTime">
                         <span slot="label">
-                            <i class="el-icon-info" />
+                            <el-tooltip placement="top">
+                                <div slot="content">如果不选择通知时间则默认为9:00</div>
+                                <i v-if="form.status == 0" class="el-icon-info" />
+                            </el-tooltip>
                             <span> 通知时间：</span>
                         </span>
                         <div v-if="form.status == 1">
@@ -72,6 +75,7 @@
                             format="HH:mm"
                             value-format="HH:mm"
                             :placeholder="form.remindTime"
+                            :disabled="forbid == 1"
                         />
                     </el-form-item>
                     <el-form-item v-if="form.status" label="通知状态：" :label-width="formLabelWidth">
@@ -79,8 +83,9 @@
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button type="warning" @click="dialogFormVisible = false">关 闭</el-button>
-                    <el-button v-if="form.status == 0" type="primary" @click="submitForm">保 存</el-button>
+                    <el-button v-if="hasThisDate && form.status == 0" type="danger" @click="deleteEvent">删 除</el-button>
+                    <el-button v-if="form.status == 1" @click="dialogFormVisible = false">关 闭</el-button>
+                    <el-button v-if="form.status == 0 && forbid != 1" type="primary" @click="submitForm">保 存</el-button>
                 </div>
             </el-dialog>
         </page-main>
@@ -90,6 +95,7 @@
 <script>
 import moment from 'moment'
 import clearableTextInputVue from '@/layout/components/clearableTextInput.vue'
+import { getMenus, addMenus, deleteMenu, alterMenu} from '@/api/menu'
 export default {
     components: {
         clearableTextInputVue
@@ -106,9 +112,11 @@ export default {
     },
     data() {
         return {
+            loading: false,
             curDate: new Date(),
             yearMonth: '',
             showDialog: true,
+            choosedDate: '',
             calendarData: [{
                 day: '2024-06-28',
                 thingToDo: '陪小倩宝宝一起过生日，吃生日蛋糕，去海底捞海皮，唱歌okok，还要玩真心话大冒险，要一起睡觉觉亲亲抱抱，一起贴贴睡大懒觉。',
@@ -124,7 +132,8 @@ export default {
             form: {
                 date: '',
                 remindTime: '',
-                thingToDo: ''
+                thingToDo: '',
+                status: ''
             },
             formLabelWidth: '120px',
             rules: {
@@ -132,8 +141,35 @@ export default {
                 // remindTime: [
                 //     {required: true, message: '请选择时间', trigger: 'change' }
                 // ]
-            }
+            },
+            forbid: ''
         }
+    },
+    computed: {
+        hasThisDate() {
+            return this.calendarData.some(item => item.day == moment(this.choosedDate).format('yyyy-MM-DD'))
+        }
+    },
+
+    created() {
+        let month = {
+            month: moment(new Date()).format('yyyyMM')
+        }
+        this.loading = true
+        getMenus(month).then(res => {
+            this.loading = false
+            if (res.code == 200) {
+                this.calendarData = res.data
+            } else {
+                this.$message.error('服务异常')
+            }
+        }).catch(() => {
+            this.loading = false
+            this.$notify({
+                title: '提示',
+                message: '网络异常，请重试'
+            })
+        })
     },
 
     methods: {
@@ -141,10 +177,99 @@ export default {
         submitForm() {
             this.$refs['form'].validate(valid => {
                 if (valid) {
-                    alert('submit!')
+                    let submitData = {
+                        day: moment(this.form.date, 'YYYY年M月D日').format('YYYY-MM-DD'),
+                        remindTime: moment(moment(this.form.date, 'YYYY年M月D日').format('YYYY-MM-DD') + ' ' + this.form.remindTime, 'YYYY-MM-DD HH:mm').format('YYYY-MM-DD HH:mm:ss'),
+                        thingToDo: this.form.thingToDo,
+                        status: 0
+                    }
+                    if (!this.form.remindTime) {
+                        submitData.remindTime = ''
+                    }
+                    this.loading = true
+                    if (this.calendarData.some(item => item.day == moment(this.choosedDate).format('yyyy-MM-DD'))) { // 修改内容
+                        alterMenu(submitData).then(res => {
+                            this.dialogFormVisible = false
+                            if (res.code == 200) {
+                                this.$notify({
+                                    title: '提示',
+                                    message: '修改内容成功'
+                                })
+                                let month = {
+                                    month: moment(submitData.day, 'YYYY-MM-DD').format('yyyyMM')
+                                }
+                                getMenus(month).then(res => {
+                                    this.loading = false
+                                    if (res.code == 200) {
+                                        this.calendarData = res.data
+                                    } else {
+                                        this.$message.error('服务异常')
+                                    }
+                                }).catch(() => {
+                                    this.loading = false
+                                    this.$notify({
+                                        title: '提示',
+                                        message: '网络异常，请重试'
+                                    })
+                                })
+                            } else {
+                                this.loading = false
+                                this.$notify({
+                                    title: '提示',
+                                    message: '服务异常'
+                                })
+                            }
+                        }).catch(() => {
+                            this.loading = false
+                            this.$notify({
+                                title: '提示',
+                                message: '网络异常，请重试'
+                            })
+                            this.dialogFormVisible = false
+                        })
+                    } else { // 新增内容
+                        addMenus(submitData).then(res => {
+                            this.dialogFormVisible = false
+                            if (res.code == 200) {
+                                this.$notify({
+                                    title: '提示',
+                                    message: '添加成功'
+                                })
+                                let month = {
+                                    month: moment(submitData.day, 'YYYY-MM-DD').format('yyyyMM')
+                                }
+                                getMenus(month).then(res => {
+                                    this.loading = false
+                                    if (res.code == 200) {
+                                        this.calendarData = res.data
+                                    } else {
+                                        this.$message.error('服务异常')
+                                    }
+                                }).catch(() => {
+                                    this.loading = false
+                                    this.$notify({
+                                        title: '提示',
+                                        message: '网络异常，请重试'
+                                    })
+                                })
+                            } else {
+                                this.loading = false
+                                this.$notify({
+                                    title: '提示',
+                                    message: '服务异常'
+                                })
+                            }
+                        }).catch(() => {
+                            this.loading = false
+                            this.$notify({
+                                title: '提示',
+                                message: '网络异常，请重试'
+                            })
+                            this.dialogFormVisible = false
+                        })
+                    }
                 } else {
-                    console.log('error submit!!')
-                    return false
+                    console.log('校验失败')
                 }
             })
         },
@@ -153,8 +278,14 @@ export default {
             // 判断calendarData中是否包含该日期
             // 如果包含是修改，否则是添加备忘
             this.form.date = date
+            this.choosedDate = data
             let index = moment(data).format('yyyy-MM-DD')
             let obj = this.calendarData.filter(item => item.day == index)
+            if (index < moment(new Date()).format('yyyy-MM-DD')) {
+                this.forbid = '1'
+            } else {
+                this.forbid = '0'
+            }
             if (obj.length == 0) {
                 console.log('尚未添加备忘录')
                 this.form.remindTime = ''
@@ -173,14 +304,82 @@ export default {
 
         },
         queryMenuInfo() {
-            if (this.yearMonth == '') {
+            if (this.yearMonth == '' || this.yearMonth == null) {
                 this.$message.error('请选择年月')
                 return
             }
-            alert(moment(this.yearMonth).format('yyyy-MM'))
+            this.curDate = new Date((moment(this.yearMonth).format('yyyy-MM-DD')))
+            let data = {
+                month: moment(this.curDate).format('YYYYMM')
+            }
+            this.loading = true
+            getMenus(data).then(res => {
+                this.loading = false
+                if (res.code == 200) {
+                    this.calendarData = res.data
+                } else {
+                    this.$message.error('服务异常')
+                }
+            }).catch(() => {
+                this.loading = false
+                this.$notify({
+                    title: '提示',
+                    message: '网络异常，请重试'
+                })
+            })
+        },
+        deleteEvent() {
+            this.$confirm('是否确认删除该事项？',  '温馨提示', {
+                confirmButtonText: '确认',
+                cancelButtonText: '取消'
+            }).then(() => {
+                let data = {
+                    day: moment(this.form.date, 'YYYY年M月D日 HH:mm:ss').format('YYYY-MM-DD')
+                }
+                this.loading = true
+                deleteMenu(data).then(res => {
+                    if (res.code == 200) {
+                        this.$notify({
+                            title: '提示',
+                            message: '删除成功'
+                        })
+                        let month = {
+                            month: moment(this.form.date, 'YYYY年M月D日 HH:mm:ss').format('yyyyMM')
+                        }
+                        getMenus(month).then(res => {
+                            this.loading = false
+                            if (res.code == 200) {
+                                this.calendarData = res.data
+                            } else {
+                                this.$message.error('服务异常')
+                            }
+                        }).catch(() => {
+                            this.loading = false
+                            this.$notify({
+                                title: '提示',
+                                message: '网络异常，请重试'
+                            })
+                        })
+                    } else {
+                        this.loading = false
+                        this.$notify({
+                            title: '提示',
+                            message: '服务异常'
+                        })
+                    }
+                }).catch(() => {
+                    this.loading = false
+                    this.$notify({
+                        title: '提示',
+                        message: '网络异常，请重试'
+                    })
+                })
+                this.dialogFormVisible = false
+            }).catch(() => {
+                this.dialogFormVisible = false
+            })
         }
     }
-
 }
 </script>
 
@@ -211,6 +410,8 @@ export default {
             line-height: 16px;
             -webkit-line-clamp: 5;
             background-color: rgb(205, 243, 243);
+            width: 100%;
+            word-break: break-all;
         }
         .date-number {
             font-size: 12px;
@@ -232,6 +433,8 @@ export default {
             line-height: 1.5em;          /* 行高 */
             background-color: rgb(205, 243, 243);
             padding: 5px 10px;
+            width: 100%;
+            word-break: break-all;
         }
     }
 }
