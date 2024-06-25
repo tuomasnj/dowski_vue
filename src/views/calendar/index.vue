@@ -387,7 +387,7 @@ export default {
 [data-mode=mobile] {
     .calendarPage {
         ::v-deep .el-input__inner {
-            width: auto;
+            width: 50px;
         }
         .Detaildialog {
             ::v-deep .el-dialog {
