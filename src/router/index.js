@@ -79,6 +79,7 @@ const constantRoutes = [
 // import EcologyExample from './modules/ecology.example'
 // import CooperationExample from './modules/cooperation.example.js'
 import CalendarRouter from './modules/calendar.js'
+import Others from './modules/birthday.js'
 
 // 当 children 不为空的主导航只有一项时，则隐藏
 let asyncRoutes = [
@@ -127,11 +128,12 @@ let asyncRoutes = [
     // },
     {
         meta: {
-            title: '日历计划',
+            title: '家',
             icon: 'calendar'
         },
         children: [
-            ...CalendarRouter
+            ...CalendarRouter,
+            ...Others
         ]
     }
 ]

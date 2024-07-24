@@ -1,23 +1,23 @@
 import Layout from '@/layout'
 export default [
     {
-        path: '/calendar',
+        path: '/others',
         component: Layout,
-        redirect: '/calendar/page',
-        name: 'calendar',
+        redirect: '/others/birthday',
+        name: 'others',
         meta: {
-            title: '备忘录',
-            icon: 'sidebar-keep-alive'
+            title: '其他',
+            icon: 'sidebar-menu'
         },
         children: [
             {
-                path: 'page',
-                name: 'calendarHome',
-                component: () => import('@/views/calendar/index.vue'),
+                path: '/birthday',
+                name: 'birthday',
+                component: () => import('@/views/others/birth.vue'),
                 meta: {
-                    title: '重要事项',
-                    icon: 'menu',
-                    auth: ['sys:memo']
+                    title: '生日',
+                    icon: 'birth',
+                    auth: ['sys:birthday']
                 }
             }
             // {

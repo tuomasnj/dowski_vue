@@ -387,7 +387,7 @@ export default {
 [data-mode=mobile] {
     .calendarPage {
         ::v-deep .el-input__inner {
-            width: 50px;
+            width: 150px;
         }
         .Detaildialog {
             ::v-deep .el-dialog {
@@ -409,6 +409,7 @@ export default {
             height: 80px;
             line-height: 16px;
             -webkit-line-clamp: 5;
+            line-clamp: 1;
             background-color: rgb(205, 243, 243);
             width: 100%;
             word-break: break-all;
@@ -429,6 +430,7 @@ export default {
             overflow: hidden;            /* 隐藏溢出内容 */
             text-overflow: ellipsis;     /* 使用省略号表示溢出内容 */
             -webkit-line-clamp: 3;    /* 显示的行数 */
+            line-clamp: 1;
             height: 5em;               /* 设置容器的高度（行数 * 行高） */
             line-height: 1.5em;          /* 行高 */
             background-color: rgb(205, 243, 243);
