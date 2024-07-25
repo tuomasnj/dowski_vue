@@ -6,13 +6,13 @@ let globalSettings = {
      * 3、鉴权指令：v-auth、v-auth-all
      * 4、鉴权函数：this.$auth()、this.$authAll()
      */
-    openPermission: false,
+    openPermission: true,
     // 是否显示头部
     showHeader: false,
     // 是否始终显示主侧边栏，设置为 false 且主侧边栏里只有一个导航时，主侧边栏会自动隐藏
     alwaysShowMainSidebar: false,
     // 是否开启侧边栏展开收起按钮
-    enableSidebarCollapse: false,
+    enableSidebarCollapse: true,
     // 侧边栏是否收起
     sidebarCollapse: false,
     // 是否显示底部版权信息，同时在路由 meta 对象里可以单独设置某个路由是否显示底部版权信息
@@ -24,13 +24,13 @@ let globalSettings = {
     // 是否开启导航搜索
     enableNavSearch: true,
     // 是否开启全屏
-    enableFullscreen: false,
+    enableFullscreen: true,
     // 是否开启页面刷新
-    enablePageReload: false,
+    enablePageReload: true,
     // 是否开启载入进度条
     enableProgress: true,
     // 是否开启动态标题
-    enableDynamicTitle: false,
+    enableDynamicTitle: true,
     // 是否开启控制台
     enableDashboard: false,
     // 是否开启扁平化路由，开启后三级以及三级以上的嵌套路由均为被处理成二级，但侧边栏导航的层级效果不变

@@ -211,9 +211,14 @@ export default {
         &.show {
             transform: translateX(0);
         }
+
+        width: 0 !important;
     }
     .main-container {
         margin-left: 0 !important;
+    }
+    .sub-sidebar-container {
+        width: 140px !important;
     }
 }
 .layout {

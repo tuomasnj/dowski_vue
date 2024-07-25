@@ -109,25 +109,23 @@ export default {
             //   margin-top: 25px;
             align-items: center;
             .gif {
-                width: 80%;
+                width: 70%;
             }
             .artFont {
                 font-family: 'Arial', sans-serif;
                 font-size: 50px;
                 font-weight: bold;
                 color: #ff69b4;
-                text-shadow: 2px 2px 0 #ff1493, 4px 4px 0 #ff69b4, 6px 6px 0 #ffb6c1, 8px 8px 0 #ff1493;
+                text-shadow: 2px 2px 5px #ff1493, 4px 4px 5px #ff69b4, 6px 6px 5px #ffb6c1, 8px 8px 5px #ff1493;
                 transform: rotate(-5deg);
                 animation: shimmer 2s infinite;
-                width: 40%;
+                width: 55%;
                 margin-left: 5%;
                 height: 40%;
             }
-            .artFont:hover {
-                text-shadow: 2px 2px 5px #ff1493, 4px 4px 5px #ff69b4, 6px 6px 5px #ffb6c1, 8px 8px 5px #ff1493;
-            }
         }
         .led-container {
+            margin-top: 10px;
             display: flex;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 1);
             width: 100%;
