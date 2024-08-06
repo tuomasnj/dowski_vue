@@ -80,6 +80,7 @@ const constantRoutes = [
 // import CooperationExample from './modules/cooperation.example.js'
 import CalendarRouter from './modules/calendar.js'
 import Others from './modules/birthday.js'
+import photoWall from './modules/photoWall.js'
 
 // 当 children 不为空的主导航只有一项时，则隐藏
 let asyncRoutes = [
@@ -127,13 +128,10 @@ let asyncRoutes = [
     //     ]
     // },
     {
-        meta: {
-            title: '家',
-            icon: 'calendar'
-        },
         children: [
             ...CalendarRouter,
-            ...Others
+            ...Others,
+            ...photoWall
         ]
     }
 ]
@@ -148,7 +146,7 @@ const lastRoute = [{
 }]
 
 const router = new VueRouter({
-    // mode: 'history',
+    mode: 'history',
     routes: constantRoutes
 })
 

@@ -16,20 +16,20 @@
                     </div>
                 </div>
                 <div class="gif">
-                    <el-image :src="require('@/assets/images/20240705.gif')" alt="蛋糕" />
+                    <el-image :src="require('@/assets/images/20240705.gif')" alt="蛋糕" @load="onResourceLoaded" />
                 </div>
                 <div v-if="mode == 'pc'" class="led-container">
-                    <el-image :src="require('@/assets/images/light.jpeg')" alt="灯光" />
+                    <el-image :src="require('@/assets/images/light.jpeg')" alt="灯光" @load="onResourceLoaded" />
                 </div>
             </div>
             <div v-if="mode == 'mobile'" class="led-container">
-                <el-image :src="require('@/assets/images/light.jpeg')" alt="灯光" />
+                <el-image :src="require('@/assets/images/light.jpeg')" alt="灯光" @load="onResourceLoaded" />
             </div>
             <div v-if="mode == 'mobile'" class="heart">
-                <el-image :src="require('@/assets/images/heart.png')" />
+                <el-image :src="require('@/assets/images/heart.png')" @load="onResourceLoaded" />
             </div>
-            <div v-if="mode == 'mobile'" style="cursor: pointer; margin-top: 15px;" @click="dialogVisible = true">
-                <el-image :src="require('@/assets/images/envelop.png')" />
+            <div v-if="mode == 'mobile'" style="cursor: pointer; margin-top: 15px; margin-bottom: 20px;" @click="dialogVisible = true">
+                <el-image :src="require('@/assets/images/envelop.png')" @load="onResourceLoaded" />
             </div>
             <div v-if="mode =='mobile' && dialogVisible" class="letter">
                 <div style="display: flex; justify-content: right;">
@@ -48,10 +48,10 @@
             </div>
             <div v-if="mode =='pc'" style="display: flex;">
                 <div class="left-heart">
-                    <el-image :src="require('@/assets/images/heart.png')" style="width: 70%;" />
+                    <el-image :src="require('@/assets/images/heart.png')" style="width: 70%;" @load="onResourceLoaded" />
                 </div>
                 <div class="right-mail" style="cursor: pointer;" @click="dialogVisible = true">
-                    <el-image :src="require('@/assets/images/envelop.png')" />
+                    <el-image :src="require('@/assets/images/envelop.png')" @load="onResourceLoaded" />
                 </div>
             </div>
             <div v-if="mode =='pc' && dialogVisible" class="letter">
@@ -79,8 +79,13 @@ export default {
         return {
             mode: this.$store.state.settings.mode,
             showLoading: false,
-            dialogVisible: false
+            dialogVisible: false,
+            loadedResources: 0,
+            totalResources: 4
         }
+    },
+    created() {
+        this.showLoading = true
     },
     methods: {
         load() {
@@ -88,6 +93,12 @@ export default {
             setTimeout(() => {
                 this.showLoading = false
             }, 2000)
+        },
+        onResourceLoaded() {
+            this.loadedResources++
+            if (this.loadedResources >= this.totalResources) {
+                this.showLoading = false
+            }
         }
     }
 
@@ -100,6 +111,7 @@ export default {
         z-index: 0;
         background: linear-gradient(45deg, #fcc, #f9c);
         .stand {
+            margin-top: 20px;
             display: flex;
             justify-content: center;
         }
@@ -139,7 +151,7 @@ export default {
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 9999;
-            width: 92%;
+            width: 94%;
             height: auto;
             margin: 2px;
             padding: 35px;

@@ -53,7 +53,7 @@ const cdn = {
 const isGZIP = process.env.VUE_APP_GZIP == 'ON'
 
 module.exports = {
-    publicPath: '',
+    publicPath: '/',
     productionSourceMap: false,
     devServer: {
         port: 8082,
