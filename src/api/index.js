@@ -17,7 +17,6 @@ const api = axios.create({
     baseURL: process.env.VUE_APP_API_ROOT,
     timeout: 10000,
     responseType: 'json'
-    // withCredentials: true
 })
 
 api.interceptors.request.use(
@@ -26,8 +25,6 @@ api.interceptors.request.use(
             console.log(request)
             if (request.data instanceof FormData) {
                 if (localStorage.getItem('token')) {
-                    // 如果是 FormData 类型（上传图片）
-                    // request.data.append('token', store.state.user.token)
                     request.headers['token'] = localStorage.getItem('token')
                 }
             } else {

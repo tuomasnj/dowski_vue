@@ -53,6 +53,7 @@ const cdn = {
 const isGZIP = process.env.VUE_APP_GZIP == 'ON'
 
 module.exports = {
+    //publicPath: './',   //打包app放开
     publicPath: '/',
     productionSourceMap: false,
     devServer: {
@@ -101,6 +102,7 @@ module.exports = {
         if (isGZIP) {
             return {
                 plugins: [
+                    // 打包为apk时候注释，正常打包为浏览器端应用时放开
                     new CompressionPlugin({
                         algorithm: 'gzip',
                         test: /\.(js|css)$/, // 匹配文件名
