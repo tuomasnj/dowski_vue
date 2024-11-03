@@ -43,7 +43,7 @@
 </template>
 
 <script>
-// import {uploadImgs} from '@/api/pics'
+import {uploadImgs} from '@/api/pics'
 export default {
     name: 'Upload',
     data() {
@@ -56,18 +56,19 @@ export default {
     watch: {
         // 调整整个页面的高度
         fileList(newVal) {
-            if (newVal.length >= 3) {
-                const photoUploadElement = document.querySelector('.container')
-                photoUploadElement.style.margin = '0'
-            } else {
-                const photoUploadElement = document.querySelector('.container')
-                photoUploadElement.style.marginTop = '100px'
-                photoUploadElement.style.marginBottom = '100px'
+            if (this.$store.state.settings.mode == 'pc') {
+                if (newVal.length >= 3) {
+                    const photoUploadElement = document.querySelector('.container')
+                    photoUploadElement.style.margin = '0'
+                } else {
+                    const photoUploadElement = document.querySelector('.container')
+                    photoUploadElement.style.marginTop = '100px'
+                    photoUploadElement.style.marginBottom = '100px'
+                }
             }
         }
     },
     mounted() {
-
     },
     methods: {
         ConfirmSubmit() {
@@ -80,14 +81,32 @@ export default {
                 return
             }
             this.loading = true
-            setTimeout(() => {
+            // setTimeout(() => {
+            //     this.loading = false
+            // }, 5000)
+            uploadImgs(this.fileList).then(res => {
                 this.loading = false
-            }, 5000)
-            // uploadImgs(this.fileList).then(res => {
-            //     console.log(res)
-            // }).catch(err => {
-            //     console.log('error', err)
-            // })
+                console.log(res)
+                const h = this.$createElement
+                if (res.code == 200) {
+                    this.$notify({
+                        title: '提示',
+                        message: h('i', { style: 'color: teal'}, '图片上传成功'),
+                        offset: 50
+                    })
+                    this.fileList = []
+                } else {
+                    this.$notify({
+                        title: '提示',
+                        message: h('i', { style: 'color: teal'}, '服务异常，图片上传失败'),
+                        offset: 50
+                    })
+                }
+            }).catch(err => {
+                this.loading = false
+                console.log('error', err)
+                this.$message.error('服务异常')
+            })
         },
         handlePreview() {
 
@@ -139,6 +158,29 @@ export default {
 [data-mode=mobile] {
     .photoUpload {
         font-size: 5px;
+        .right {
+            .upload {
+                ::v-deep .el-upload {
+                    display: block;
+                    margin: 15px 20px;
+                }
+            }
+        }
+        .container {
+            .break {
+                display: flex;
+                justify-content: center;
+                margin: 15px 0 0 0;
+            }
+        }
+        ::v-deep .el-loading-spinner {
+            .el-icon-loading {
+                font-size: 28px;
+            }
+            .el-loading-text {
+                font-size: 18px;
+            }
+        }
     }
 }
 [data-mode=pc] {

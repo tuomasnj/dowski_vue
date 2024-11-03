@@ -13,7 +13,9 @@ const state = {
     title: ''
 }
 
-const getters = {}
+const getters = {
+
+}
 
 const actions = {}
 

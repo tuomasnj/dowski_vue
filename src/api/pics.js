@@ -8,3 +8,8 @@ export function uploadImgs(files) {
     })
     return api.post('/file/upload', formData)
 }
+
+// 获取图片信息
+export function downLoadImgs() {
+    return api.post('/file/ImgInfo')
+}

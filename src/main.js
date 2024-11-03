@@ -22,6 +22,9 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
 
+import waterfall from 'vue-waterfall2'
+Vue.use(waterfall)
+
 import hotkeys from 'hotkeys-js'
 Vue.prototype.$hotkeys = hotkeys
 
@@ -40,6 +43,7 @@ Vue.prototype.$message = Message
 import './mock'
 
 Vue.config.productionTip = false
+Vue.config.devtools = false
 
 Vue.prototype.$eventBus = new Vue({
     router,

@@ -19,6 +19,16 @@ export default [
                     icon: 'pic-upload',
                     auth: ['sys:pic']
                 }
+            },
+            {
+                path: 'show',
+                name: 'show',
+                component: () => import('@/views/photoWall/show.vue'),
+                meta: {
+                    title: '图片浏览',
+                    icon: 'photo',
+                    auth: ['sys:pic']
+                }
             }
             // {
             //     path: 'calendarWish',
