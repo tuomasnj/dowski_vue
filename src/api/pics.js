@@ -10,6 +10,6 @@ export function uploadImgs(files) {
 }
 
 // 获取图片信息
-export function downLoadImgs() {
-    return api.post('/file/ImgInfo')
+export function downLoadImgs(data) {
+    return api.post('/file/ImgInfo', data)
 }

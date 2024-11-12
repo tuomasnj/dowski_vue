@@ -146,7 +146,7 @@ const lastRoute = [{
 }]
 
 const router = new VueRouter({
-    mode: 'history',
+    mode: 'hash',
     routes: constantRoutes
 })
 
