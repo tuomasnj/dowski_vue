@@ -81,6 +81,7 @@ const constantRoutes = [
 import CalendarRouter from './modules/calendar.js'
 import Others from './modules/birthday.js'
 import photoWall from './modules/photoWall.js'
+import lifeservice from './modules/lifeservice.js'
 
 // 当 children 不为空的主导航只有一项时，则隐藏
 let asyncRoutes = [
@@ -131,7 +132,8 @@ let asyncRoutes = [
         children: [
             ...CalendarRouter,
             ...Others,
-            ...photoWall
+            ...photoWall,
+            ...lifeservice
         ]
     }
 ]

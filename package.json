@@ -16,6 +16,7 @@
         "axios": "^0.21.0",
         "core-js": "^3.6.4",
         "dayjs": "^1.9.4",
+        "echarts": "^5.5.1",
         "element-ui": "^2.14.0",
         "hotkeys-js": "^3.8.1",
         "mavon-editor": "^2.9.1",
