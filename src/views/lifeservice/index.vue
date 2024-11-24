@@ -88,7 +88,7 @@ export default {
                             }
                         },
                         grid: {
-                            top: '15%',
+                            top: '25%',
                             left: '10%',
                             right: '10%',
                             bottom: '15%'
@@ -332,7 +332,7 @@ export default {
                             }
                         },
                         grid: {
-                            top: '15%',
+                            top: '25%',
                             left: '10%',
                             right: '10%',
                             bottom: '15%'
@@ -530,7 +530,7 @@ export default {
 <style lang="scss" scoped>
     #main {
         padding: 0;
-        .el-loading-mask {
+        ::v-deep .el-loading-mask {
             z-index: 800;
         }
     }

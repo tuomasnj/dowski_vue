@@ -9,7 +9,7 @@
                             type="month"
                             placeholder="选择年月"
                         />
-                        <el-button type="primary" round class="view" style="width: 100px;" @click="queryMenuInfo">查&nbsp;&nbsp;&nbsp;询</el-button>
+                        <el-button type="primary" round class="view" style="width: 100px; margin-left: 15px;" @click="queryMenuInfo">查&nbsp;&nbsp;&nbsp;询</el-button>
                     </div>
                 </el-col>
                 <el-col :span="16" />

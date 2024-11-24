@@ -23,8 +23,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
 
 import 'vant/lib/index.css'
-import { Dialog } from 'vant'
+import { Dialog, Toast } from 'vant'
 Vue.use(Dialog)
+Vue.use(Toast)
 
 import waterfall from 'vue-waterfall2'
 Vue.use(waterfall)

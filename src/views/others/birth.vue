@@ -107,6 +107,9 @@ export default {
 
 <style scoped lang="scss">
 [data-mode=mobile] {
+    ::v-deep .el-loading-mask {
+        z-index: 800;
+    }
     .page {
         z-index: 0;
         background: linear-gradient(45deg, #fcc, #f9c);

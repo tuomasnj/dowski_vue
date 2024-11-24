@@ -22,7 +22,7 @@ const actions = {}
 const mutations = {
     // 设置访问模式，页面宽度小于 992px 时切换为移动端展示
     setMode(state, width) {
-        if (width < 992) {
+        if (width < 900) {
             state.mode = 'mobile'
         } else {
             state.mode = 'pc'

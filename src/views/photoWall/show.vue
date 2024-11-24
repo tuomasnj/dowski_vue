@@ -37,7 +37,7 @@
 </template>
 <script>
 
-import { downLoadImgs } from '@/api/pics'
+import { downLoadImgs, deleteImg } from '@/api/pics'
 export default {
     name: 'Show',
     components: {
@@ -114,13 +114,46 @@ export default {
         handleLongPress(event) {
             // console.log('target', event.target.outerHTML)
             if (this.$store.state.settings.mode == 'pc') {
-                this.$confirm('是否确认删除选中的图片？').then(() => {
+                this.$confirm('是否确认删除选中的图片？', '提示').then(() => {
                     // 找到最后一个斜杠的位置
                     const lastSlashIndex = event.target.outerHTML.lastIndexOf('/')
                     const tempfileName = event.target.outerHTML.substring(lastSlashIndex + 1)
                     const index = tempfileName.indexOf('"')
                     const fileName = tempfileName.substring(0, index)
                     console.log('fileName', fileName)
+                    this.loading = true
+                    deleteImg({fileName: fileName}).then(res => {
+                        this.loading = false
+                        if (res.code == 200) {
+                            this.$message.success('删除成功')
+                            this.loading = true
+                            this.reload = false
+                            downLoadImgs({current: this.current, size: this.size}).then(res => {
+                                if (res.code == 200) {
+                                    this.loading = false
+                                    this.$alert('页面刷新成功', '温馨提示', {
+                                        confirmButtonText: '确定'
+                                    })
+                                    this.images = res.data.records
+                                    this.total = res.data.total
+                                    this.urlList = this.images.map(item => item.imageUrl)
+                                    this.reload = true
+                                } else {
+                                    this.loading = false
+                                    this.$message.error('获取图片失败')
+                                }
+                            }).catch(err => {
+                                this.loading = false
+                                console.log('error', err)
+                                this.$message.error('服务异常')
+                            })
+                        } else {
+                            this.$message.error('删除失败')
+                        }
+                    }).catch(() => {
+                        this.loading = false
+                        this.$message.fail('删除失败')
+                    })
                 }).catch(e => {
                     console.log(e)
                     console.log('关闭')
@@ -130,7 +163,42 @@ export default {
                     title: '温馨提示',
                     message: '是否确认删除选中的图片？'
                 }).then(() => {
-
+                    // 找到最后一个斜杠的位置
+                    const lastSlashIndex = event.target.outerHTML.lastIndexOf('/')
+                    const tempfileName = event.target.outerHTML.substring(lastSlashIndex + 1)
+                    const index = tempfileName.indexOf('"')
+                    const fileName = tempfileName.substring(0, index)
+                    console.log('fileName', fileName)
+                    this.loading = true
+                    deleteImg({fileName: fileName}).then(res => {
+                        this.loading = false
+                        if (res.code == 200) {
+                            this.$toast.success('删除成功')
+                            this.loading = true
+                            this.reload = false
+                            downLoadImgs({current: this.current, size: this.size}).then(res => {
+                                this.loading = false
+                                if (res.code == 200) {
+                                    this.$toast.success('刷新成功')
+                                    this.images = res.data.records
+                                    this.total = res.data.total
+                                    this.urlList = this.images.map(item => item.imageUrl)
+                                    this.reload = true
+                                } else {
+                                    this.$toast.fail('获取图片失败')
+                                }
+                            }).catch(err => {
+                                this.loading = false
+                                console.log('error', err)
+                                this.$toast.fail('服务异常')
+                            })
+                        } else {
+                            this.$toast.fail('删除失败')
+                        }
+                    }).catch(() => {
+                        this.loading = false
+                        this.$toast.fail('删除失败')
+                    })
                 }).catch(() => {
                     console.log('关闭')
                 })
@@ -190,6 +258,9 @@ export default {
 [data-mode=mobile] {
     .photoShow {
         min-height: 100vh;
+        ::v-deep .el-loading-mask {
+            z-index: 800;
+        }
         .cell-item {
             width: 100%;
             margin-bottom: 6px;

@@ -13,3 +13,8 @@ export function uploadImgs(files) {
 export function downLoadImgs(data) {
     return api.post('/file/ImgInfo', data)
 }
+
+// 删除图片
+export function deleteImg(data) {
+    return api.post('/file/delete', data)
+}
